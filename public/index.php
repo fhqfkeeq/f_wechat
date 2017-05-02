@@ -1,5 +1,6 @@
 <?php
 
+echo 'hahaha~~';exit;
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
