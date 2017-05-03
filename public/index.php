@@ -1,6 +1,5 @@
 <?php
 
-echo '饭团';exit;
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
