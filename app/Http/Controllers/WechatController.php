@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\Http;
 use Illuminate\Http\Request;
 
 class WechatController extends Controller
@@ -26,10 +27,15 @@ class WechatController extends Controller
     }
 
     public function init(Request $request){
+
+        $wechat = resolve('Wechat');
+        $menu = $wechat->getMenu();
+        print_r($menu);exit;
+
         if($this->checkSignature($request) == true){
             echo $request->input('echostr');exit;
-        }else{
-            echo 'error';exit;
         }
+
+
     }
 }
