@@ -181,7 +181,7 @@ class Wechat
             return false;
         }
 
-        if (isset($re['errcode']) === true && $re['errorcode'] != 0) {
+        if (isset($re['errcode']) === true && $re['errcode'] != 0) {
             $this->error = '请求失败|' . $re['errcode'] . ':' . $re['errmsg'];
             return false;
         }
