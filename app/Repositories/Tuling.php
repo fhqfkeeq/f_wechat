@@ -54,7 +54,7 @@ class Tuling
 
         $returnData['code'] = 1000;
 
-        return $re;
+        return $returnData;
     }
 
     private function _query($data = [])
