@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\Http;
 use Illuminate\Http\Request;
+use LSS\XML2Array;
 
 class WechatController extends Controller
 {
@@ -29,13 +30,25 @@ class WechatController extends Controller
     public function init(Request $request){
 
         $wechat = resolve('Wechat');
-        $menu = $wechat->getMenu();
-        print_r($menu);exit;
+        $tuling = resolve('Tuling');
+
+        $xml = $request->getContent();
+        $msgInfo = $wechat->getMsgContent($xml);
+
+        if($msgInfo['MsgType'] == 'text'){
+            $re = $tuling->getContent($msgInfo['Content'], $msgInfo['FromUserName']);
+            if($re === false){
+//                echo $tuling->getError();
+                $wechat->replyMessage('text', $msgInfo['FromUserName'], $msgInfo['ToUserName'], $tuling->getError());
+            }else{
+                $wechat->replyMessage('text', $msgInfo['FromUserName'], $msgInfo['ToUserName'], $re['massage']);
+            }
+        }
+//        $menu = $wechat->getMenu();
+//        print_r($menu);exit;
 
         if($this->checkSignature($request) == true){
             echo $request->input('echostr');exit;
         }
-
-
     }
 }

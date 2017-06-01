@@ -12,6 +12,7 @@ namespace App\Repositories;
 use LSS\Array2XML;
 use Illuminate\Support\Facades\Cache;
 use App\Facades\Http;
+use LSS\XML2Array;
 
 class Wechat
 {
@@ -38,6 +39,23 @@ class Wechat
 
     public function getError(){
         return $this->error;
+    }
+
+    public function getMsgContent($xml){
+        $data = XML2Array::createArray($xml);
+        $returnData = [
+            'ToUserName' => $data['xml']['ToUserName']['@cdata'],
+            'FromUserName' => $data['xml']['FromUserName']['@cdata'],
+            'CreateTime' => $data['xml']['CreateTime'],
+            'MsgType' => $data['xml']['MsgType']['@cdata'],
+            'MsgId' => $data['xml']['MsgId'],
+        ];
+
+        if($returnData['MsgType'] == 'text'){
+            $returnData['Content'] = $data['xml']['Content']['@cdata'];
+        }
+
+        return $returnData;
     }
 
     public function getMenu()
@@ -74,24 +92,34 @@ class Wechat
      * @param $form_id
      * @param $msg
      */
-    public function replyMessage($open_id, $form_id, $msg)
+    public function replyMessage($type = 'text', $open_id, $form_id, $msg)
     {
-
         $data = [
             'ToUserName' => ['@cdata' => $open_id],
             'FromUserName' => ['@cdata' => $form_id],
             'CreateTime' => time(),
-            'MsgType' => ['@cdata' => 'news'],
-            'ArticleCount' => count($msg)
         ];
 
-        foreach ($msg as $item) {
-            $data['Articles']['item'][] = [
-                'Title' => ['@cdata' => $item['title']],
-                'Description' => ['@cdata' => $item['desc']],
-                'PicUrl' => ['@cdata' => $item['pic_url']],
-                'Url' => ['@cdata' => $item['url']]
-            ];
+
+        switch ($type){
+            case 'text':
+                $data['MsgType'] = ['@cdata' => 'text'];
+                $data['Content'] = ['@cdata' => $msg];
+                break;
+            case 'news':
+                $data['MsgType'] = ['@cdata' => 'news'];
+                $data['ArticleCount'] = count($msg);
+
+                foreach ($msg as $item) {
+                    $data['Articles']['item'][] = [
+                        'Title' => ['@cdata' => $item['title']],
+                        'Description' => ['@cdata' => $item['desc']],
+                        'PicUrl' => ['@cdata' => $item['pic_url']],
+                        'Url' => ['@cdata' => $item['url']]
+                    ];
+                }
+
+                break;
         }
 
         $xmlObj = Array2XML::createXML('xml', $data);
