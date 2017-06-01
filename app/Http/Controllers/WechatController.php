@@ -33,6 +33,11 @@ class WechatController extends Controller
         $tuling = resolve('Tuling');
 
         $xml = $request->getContent();
+
+        if(empty($xml) === true){
+            return false;
+        }
+
         \Log::info('wechat call xml|'.$xml);
         $msgInfo = $wechat->getMsgContent($xml);
         \Log::info('decode wechat message|'.json_encode($msgInfo));
