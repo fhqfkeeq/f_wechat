@@ -17,8 +17,8 @@ use LSS\XML2Array;
 class Wechat
 {
     const TOKEN = 'A6ovLloGP6939IKgCENEcF2piDW8KZukz';
-    const APPID = 'wx42a260918b548f92';
-    const APPSECRET = '35a6160821b9d570e31cb38a119f1fdd';
+    const APPID = 'wxd4f972b14430df53';
+    const APPSECRET = '7cfcd5b1f62c656c2451905c78d442a3';
     const WX_HOST = 'https://api.weixin.qq.com/cgi-bin/';
 
     private $access_token = '';

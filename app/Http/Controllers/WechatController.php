@@ -38,7 +38,7 @@ class WechatController extends Controller
             return false;
         }
 
-        \Log::info('wechat call xml|'.$xml);
+        \Log::info('wechat call xml|'.PHP_EOL.$xml);
         $msgInfo = $wechat->getMsgContent($xml);
         \Log::info('decode wechat message|'.json_encode($msgInfo));
 
@@ -57,5 +57,11 @@ class WechatController extends Controller
         if($this->checkSignature($request) == true){
             echo $request->input('echostr');exit;
         }
+    }
+
+    public function getMenu(){
+        $wechat = resolve('Wechat');
+        $menu = $wechat->getMenu();
+        print_r($menu);exit;
     }
 }
