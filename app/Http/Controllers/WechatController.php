@@ -37,6 +37,7 @@ class WechatController extends Controller
 
         if($msgInfo['MsgType'] == 'text'){
             $re = $tuling->getContent($msgInfo['Content'], $msgInfo['FromUserName']);
+            \Log::info('tuling return|'.json_encode($re));
             if($re === false){
 //                echo $tuling->getError();
                 $wechat->replyMessage('text', $msgInfo['FromUserName'], $msgInfo['ToUserName'], $tuling->getError());
