@@ -33,20 +33,21 @@ class WechatController extends Controller
         $tuling = resolve('Tuling');
 
         $xml = $request->getContent();
+        \Log::info('wechat call xml|'.$xml);
         $msgInfo = $wechat->getMsgContent($xml);
+        \Log::info('decode wechat message|'.json_encode($msgInfo));
 
         if($msgInfo['MsgType'] == 'text'){
             $re = $tuling->getContent($msgInfo['Content'], $msgInfo['FromUserName']);
             \Log::info('tuling return|'.json_encode($re));
             if($re === false){
-//                echo $tuling->getError();
                 $wechat->replyMessage('text', $msgInfo['FromUserName'], $msgInfo['ToUserName'], $tuling->getError());
             }else{
                 $wechat->replyMessage('text', $msgInfo['FromUserName'], $msgInfo['ToUserName'], $re['massage']);
             }
+        }else{
+            $wechat->replyMessage('text', $msgInfo['FromUserName'], $msgInfo['ToUserName'], '其他功能我还木有写');
         }
-//        $menu = $wechat->getMenu();
-//        print_r($menu);exit;
 
         if($this->checkSignature($request) == true){
             echo $request->input('echostr');exit;
